@@ -1,0 +1,42 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main   # or "master", depending on your repo branch
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- task: DownloadGitHubRepo@1
+  inputs:
+    repository: '$(Build.Repository.Name)'
+  displayName: 'Download repository'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy web files'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    ArtifactName: 'drop'
+  displayName: 'Publish artifacts'
+
+  - task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'github.com_viny080in'
+    appName: 'naturewebapp'
+    package: '$(Pipeline.Workspace)/drop'
+  displayName: 'Deploy to Azure Web App'
+
+# Optional deployment step (see next section)
