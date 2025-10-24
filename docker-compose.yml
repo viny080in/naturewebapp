@@ -1,0 +1,8 @@
+
+services:
+  naturewebapp:
+    build: .
+    container_name: nature-gallery
+    ports:
+      - "8081:80"
+    restart: unless-stopped
